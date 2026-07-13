@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Desperta! — Retiro Jovem · Juventude de Fátima</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,600;0,9..144,700;0,9..144,900;1,9..144,500&family=Work+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --night:       #0E1626;
+    --night-2:     #16213A;
+    --dawn-gold:   #EBC13E;
+    --dawn-amber:  #F0924A;
+    --coral:       #E8654A;
+    --blue:        #4C7FB8;
+    --paper:       #F7F2E7;
+    --paper-dim:   #D9D2C2;
+    --ink:         #14213D;
+    --line:        rgba(247,242,231,0.14);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Work Sans', sans-serif;
+    background:var(--night);
+    color:var(--paper);
+    overflow-x:hidden;
+  }
+  .serif{ font-family:'Fraunces', serif; }
+  a{ color:inherit; }
+  img{ max-width:100%; display:block; }
+
+  /* ---------- chevron accent bar (nod to the poster) ---------- */
+  .chevron-bar{
+    height:7px; width:100%; position:fixed; top:0; left:0; z-index:20;
+    background-image: repeating-linear-gradient(135deg, var(--paper) 0 6px, var(--ink) 6px 12px);
+  }
+
+  /* ---------- background gradient that dawns across the whole page (like a sunrise) ---------- */
+  body{
+    background:
+      radial-gradient(ellipse 120% 60% at 50% 0%, var(--night-2) 0%, transparent 70%),
+      linear-gradient(180deg,
+        var(--night) 0%, var(--night) 12%,
+        #241B2E 28%, #4A2A3A 42%,
+        #8A3F3E 55%, #C1573F 66%,
+        var(--dawn-amber) 78%, var(--dawn-gold) 92%, #FBD979 100%);
+    background-repeat: no-repeat, no-repeat;
+    background-size: 100% 100vh, 100% 100%;
+    background-position: top, top;
+  }
+  .stars{
+    position:absolute; top:0; left:0; width:100%; height:1400px; z-index:-1; opacity:0.7; pointer-events:none;
+    background-image:
+      radial-gradient(1.5px 1.5px at 10% 15%, var(--paper), transparent),
+      radial-gradient(1px 1px at 25% 40%, var(--paper), transparent),
+      radial-gradient(1.5px 1.5px at 70% 10%, var(--paper), transparent),
+      radial-gradient(1px 1px at 85% 30%, var(--paper), transparent),
+      radial-gradient(1.5px 1.5px at 40% 60%, var(--paper), transparent),
+      radial-gradient(1px 1px at 60% 80%, var(--paper), transparent),
+      radial-gradient(1.5px 1.5px at 15% 85%, var(--paper), transparent),
+      radial-gradient(1px 1px at 92% 65%, var(--paper), transparent);
+    background-repeat:no-repeat;
+    mask-image: linear-gradient(180deg, black 0%, black 35%, transparent 85%);
+  }
+  .sun-glow{
+    position:absolute; left:50%; bottom:-200px; width:1100px; height:1100px; margin-left:-550px;
+    background: radial-gradient(circle, rgba(255,221,140,0.95) 0%, rgba(240,146,74,0.6) 34%, rgba(240,146,74,0) 68%);
+    filter: blur(10px); pointer-events:none; z-index:-1;
+  }
+
+  section{ position:relative; padding: 6.5rem 1.5rem; max-width:920px; margin:0 auto; }
+
+  /* ---------- scroll reveal (Apple-like, stronger) ---------- */
+  .reveal{
+    opacity:0; transform: translateY(64px) scale(0.96); filter: blur(6px);
+    transition: opacity 1.1s cubic-bezier(.16,.8,.24,1), transform 1.1s cubic-bezier(.16,.8,.24,1), filter 1.1s cubic-bezier(.16,.8,.24,1);
+  }
+  .reveal.in-view{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+  .info-grid.reveal.in-view .info-card,
+  .groups-grid.reveal.in-view .group-card{ animation: none; }
+  .info-card, .group-card{ transition: opacity 0.s ease, transform 0.7s ease; }
+  .reveal:not(.in-view) .info-card,
+  .reveal:not(.in-view) .group-card{ opacity:0; transform:translateY(24px); }
+  .info-card:nth-child(1){ transition-delay:0.05s; } .info-card:nth-child(2){ transition-delay:0.15s; }
+  .info-card:nth-child(3){ transition-delay:0.25s; } .info-card:nth-child(4){ transition-delay:0.35s; }
+  .group-card:nth-child(1){ transition-delay:0.05s; } .group-card:nth-child(2){ transition-delay:0.12s; }
+  .group-card:nth-child(3){ transition-delay:0.19s; } .group-card:nth-child(4){ transition-delay:0.26s; }
+  .group-card:nth-child(5){ transition-delay:0.33s; }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding-top:6rem; padding-bottom:4rem;
+  }
+  .eyebrow{
+    font-size:0.78rem; letter-spacing:0.22em; text-transform:uppercase;
+    color:var(--dawn-gold); margin-bottom:1.4rem; font-weight:600;
+  }
+
+  .tag-row{ display:flex; gap:0.7rem; justify-content:center; margin-bottom:1.8rem; }
+  .tag{
+    padding:0.4rem 1rem; font-weight:700; font-size:0.95rem; border-radius:3px;
+    box-shadow:0 6px 14px rgba(0,0,0,0.35); font-family:'Work Sans', sans-serif;
+  }
+  .tag.red{ background:var(--coral); color:#fff; transform:rotate(-3deg); }
+  .tag.gold{ background:var(--dawn-gold); color:var(--ink); transform:rotate(3deg); }
+
+  .headline{
+    font-size: clamp(2.1rem, 5.6vw, 3.6rem);
+    font-weight:600; line-height:1.12; letter-spacing:-0.01em;
+    max-width:17ch; margin-bottom:1.4rem;
+  }
+  .headline em{
+    font-style:italic; font-weight:500; color:var(--dawn-gold);
+  }
+
+  .sub{
+    font-size:1.05rem; color:var(--paper-dim); max-width:38ch; line-height:1.6;
+    margin-bottom:2.2rem;
+  }
+
+  .cta-stack{ display:flex; flex-direction:column; align-items:center; gap:0.9rem; }
+  .cta{
+    display:inline-block; background:var(--dawn-gold); color:var(--ink);
+    font-weight:700; font-size:1.05rem; letter-spacing:0.01em; text-align:center;
+    padding:1.2rem 2.2rem; border-radius:3px; text-decoration:none; max-width:22ch;
+    box-shadow: 0 0 0 1px rgba(235,193,62,0.4), 0 14px 32px -10px rgba(235,193,62,0.55);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .cta:hover{ transform:translateY(-2px); box-shadow: 0 0 0 1px rgba(235,193,62,0.6), 0 18px 36px -8px rgba(235,193,62,0.7); }
+  .cta-text-link{
+    font-size:0.9rem; color:var(--paper-dim); text-decoration:underline; text-underline-offset:4px;
+    background:none; padding:0.2rem;
+  }
+  .cta-text-link:hover{ color:var(--dawn-gold); }
+
+  .countdown{
+    margin-top:2.2rem; display:flex; gap:1rem; align-items:center; justify-content:center;
+  }
+  .countdown-digits{ display:flex; gap:0.4rem; }
+  .countdown-box{
+    width:52px; height:60px; border-radius:6px;
+    background: rgba(10,16,28,0.7); border:1px solid rgba(247,242,231,0.18);
+    display:flex; align-items:center; justify-content:center;
+    box-shadow: 0 10px 24px -10px rgba(0,0,0,0.5);
+  }
+  .countdown-box span{
+    font-family:'Fraunces', serif; font-weight:700; font-size:1.7rem; color:var(--dawn-gold);
+  }
+  .countdown-label{
+    font-size:0.8rem; letter-spacing:0.05em; color:var(--paper-dim);
+    max-width:6.5em; line-height:1.3; text-align:left;
+  }
+
+  /* ---------- VERSE (dramatic full-screen scroll moment) ---------- */
+  .verse-section{
+    text-align:center; min-height:100svh; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; padding:4rem 1.5rem;
+  }
+  .verse{
+    font-size: clamp(1.9rem, 5.6vw, 3.6rem);
+    font-weight:500; font-style:italic; line-height:1.38;
+    max-width:19ch; margin:0 auto 1.8rem;
+    text-shadow: 0 6px 40px rgba(0,0,0,0.35);
+  }
+  .verse-ref{ color:var(--dawn-gold); letter-spacing:0.14em; text-transform:uppercase; font-size:0.85rem; font-weight:700; }
+  .rule{ width:48px; height:2px; background:var(--dawn-gold); margin:2.4rem auto; opacity:0.6; }
+
+  /* stronger, distinct reveal for the verse beat */
+  .reveal-verse{
+    opacity:0; transform: translateY(50px) scale(0.82); filter: blur(10px);
+    transition: opacity 1.3s cubic-bezier(.16,.8,.24,1), transform 1.3s cubic-bezier(.16,.8,.24,1), filter 1.3s cubic-bezier(.16,.8,.24,1);
+  }
+  .reveal-verse.in-view{ opacity:1; transform:translateY(0) scale(1); filter:blur(0); }
+
+  /* ---------- ABOUT ---------- */
+  .about-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:3rem; align-items:start; }
+  @media (max-width: 720px){ .about-grid{ grid-template-columns:1fr; gap:2rem; } }
+  .eyebrow-label{
+    font-size:0.75rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--dawn-amber);
+    font-weight:600; margin-bottom:1rem; display:block;
+  }
+  h2.serif{ font-size:clamp(1.7rem, 3.4vw, 2.3rem); font-weight:600; line-height:1.2; margin-bottom:1.2rem; }
+  .about-grid p{ color:var(--paper-dim); line-height:1.75; font-size:1rem; }
+
+  /* ---------- painel de contraste (usado nas seções sobre fundo mais claro) ---------- */
+  .panel{
+    background: rgba(10,16,28,0.66);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(247,242,231,0.10);
+    border-radius: 14px;
+    padding: 3rem 2.2rem;
+    box-shadow: 0 30px 60px -20px rgba(0,0,0,0.45);
+  }
+  @media (max-width:600px){ .panel{ padding:2.2rem 1.4rem; } }
+
+  /* ---------- INFO CARDS ---------- */
+  .info-section{ padding-top:5rem; }
+  .info-grid{
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:1px;
+    background:var(--line); border:1px solid var(--line); border-radius:4px; overflow:hidden;
+  }
+  @media (max-width: 640px){ .info-grid{ grid-template-columns:1fr; } }
+  .info-card{ background:rgba(10,16,28,0.75); padding:2rem 1.8rem; }
+  .info-card .label{ font-size:0.72rem; letter-spacing:0.16em; text-transform:uppercase; color:var(--dawn-gold); margin-bottom:0.6rem; font-weight:600; }
+  .info-card .value{ font-size:1.15rem; font-weight:500; }
+  .info-card .value.small{ font-size:0.95rem; color:var(--paper-dim); font-weight:400; line-height:1.5; }
+
+  /* ---------- GRUPOS (Juventude de Fátima) ---------- */
+  .groups-section{ padding-top:5rem; }
+  .groups-grid{ display:grid; grid-template-columns:repeat(3, 1fr); gap:1.2rem; margin-top:2.6rem; }
+  @media (max-width:760px){ .groups-grid{ grid-template-columns:1fr 1fr; } }
+  @media (max-width:480px){ .groups-grid{ grid-template-columns:1fr; } }
+  .group-card{
+    background:rgba(10,16,28,0.55); border:1px solid rgba(247,242,231,0.12); border-radius:4px;
+    padding:1.6rem 1.4rem;
+  }
+  .group-card .g-name{ font-family:'Fraunces', serif; font-weight:600; font-size:1.05rem; margin-bottom:0.5rem; color:var(--paper); }
+  .group-card .g-desc{ font-size:0.88rem; color:var(--paper-dim); line-height:1.55; }
+
+  /* ---------- FINAL CTA ---------- */
+  .final-section{ text-align:center; padding-top:6rem; padding-bottom:5rem; }
+  .final-section h2.serif{ font-size:clamp(2rem, 5vw, 3rem); max-width:16ch; margin:0 auto 1.4rem; }
+  .final-section .sub{ margin-left:auto; margin-right:auto; margin-bottom:2.2rem; }
+
+  /* ---------- FOOTER / LOGOS ---------- */
+  footer{ text-align:center; padding:3rem 1.5rem 3.5rem; }
+  .logos-row{
+    display:flex; align-items:center; justify-content:center; gap:2.4rem;
+    margin-bottom:1.6rem; flex-wrap:wrap;
+  }
+  .logo-slot{ height:56px; display:flex; align-items:center; justify-content:center; }
+  .logo-slot img{ height:100%; width:auto; object-fit:contain; filter:grayscale(0.1); }
+  .logo-fallback{
+    font-family:'Fraunces', serif; font-weight:600; font-size:0.95rem; color:var(--paper); text-shadow:0 2px 12px rgba(0,0,0,0.5);
+  }
+  footer .foot-text{ font-size:0.78rem; color:var(--paper-dim); opacity:0.85; text-shadow:0 2px 10px rgba(0,0,0,0.4); }
+</style>
+</head>
+<body>
+
+<div class="chevron-bar"></div>
+<div class="stars"></div>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="eyebrow">Retiro Jovem "Desperta!" 2026 - Juventude de Fátima</div>
+
+  <div class="tag-row">
+    <span class="tag red">15 E 16</span>
+    <span class="tag gold">AGOSTO</span>
+  </div>
+
+  <h1 class="headline serif">Existem despertares que <em>um despertador</em> não consegue fazer.</h1>
+
+  <p class="sub">Um final de semana pra sair do automático da rotina e viver um encontro de verdade com Jesus.</p>
+
+  <div class="cta-stack">
+    <a class="cta cta-form" href="https://forms.gle/XpQYJC3zjzpaXAcA9" target="_blank" rel="noopener">Inscreva-se agora e Desperte para a vida!</a>
+    <a class="cta-text-link" href="#sobre">Saiba mais!</a>
+  </div>
+
+  <div class="countdown" id="countdown">
+    <div class="countdown-digits">
+      <div class="countdown-box"><span id="cd-tens">0</span></div>
+      <div class="countdown-box"><span id="cd-units">0</span></div>
+    </div>
+    <div class="countdown-label">Dias para Despertar</div>
+  </div>
+</section>
+
+<!-- VERSE -->
+<section class="verse-section reveal-verse">
+  <p class="verse serif">&ldquo;Desperta, tu que dormes, levanta-te dentre os mortos, e Cristo te iluminará.&rdquo;</p>
+  <div class="verse-ref">Efésios 5, 14</div>
+</section>
+
+<div class="rule"></div>
+
+<!-- ABOUT -->
+<section id="sobre" class="about-section reveal">
+  <div class="about-grid">
+    <div>
+      <span class="eyebrow-label">O convite</span>
+      <h2 class="serif">Você está acordado, ou só vivendo no automático?</h2>
+    </div>
+    <p>
+      Todos os dias o despertador toca e a rotina recomeça: tela, rotina, cansaço, repetição.
+      O "Desperta!" é o espaço pra parar esse ciclo por um fim de semana — pra jovens e adolescentes
+      viverem comunidade, oração e um encontro real com Jesus, longe da correria de todo dia.
+      Um retiro organizado com carinho pela Juventude de Fátima, pra você e pros jovens que você ama.
+    </p>
+  </div>
+</section>
+
+<!-- INFO -->
+<section class="info-section reveal">
+  <div class="panel">
+    <span class="eyebrow-label">Informações práticas</span>
+    <h2 class="serif" style="margin-bottom:2rem;">Tudo o que você precisa saber</h2>
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="label">Data</div>
+        <div class="value">15 e 16 de agosto</div>
+      </div>
+      <div class="info-card">
+        <div class="label">O que está incluso</div>
+        <div class="value small">Camiseta, alimentação, hospedagem e muita diversão.</div>
+      </div>
+      <div class="info-card">
+        <div class="label">Valor</div>
+        <div class="value">R$ 150 · PIX ou dinheiro</div>
+      </div>
+      <div class="info-card">
+        <div class="label">O que levar</div>
+        <div class="value small">Roupas confortáveis, itens de higiene, roupa de cama, Bíblia e disposição pra desligar do automático.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- JUVENTUDE DE FÁTIMA -->
+<section class="groups-section reveal">
+  <div class="panel">
+    <span class="eyebrow-label">Depois do Desperta, o convite continua</span>
+    <h2 class="serif">Juventude de Fátima</h2>
+    <p class="sub" style="margin-bottom:0;">
+      O Desperta! é um fim de semana — mas a caminhada de fé pode continuar depois dele.
+      Conheça os grupos da nossa Juventude:
+    </p>
+    <div class="groups-grid">
+      <div class="group-card">
+        <div class="g-name">Grupo de Jovens de Fátima</div>
+        <div class="g-desc">Encontros semanais de formação, oração e amizade pra viver a fé em comunidade.</div>
+      </div>
+      <div class="group-card">
+        <div class="g-name">Acólitos</div>
+        <div class="g-desc">Serviço direto ao altar, auxiliando as celebrações litúrgicas da paróquia.</div>
+      </div>
+      <div class="group-card">
+        <div class="g-name">Cerimoniários</div>
+        <div class="g-desc">Organização e condução das celebrações, cuidando dos detalhes da liturgia.</div>
+      </div>
+      <div class="group-card">
+        <div class="g-name">Crisma</div>
+        <div class="g-desc">Preparação dos jovens para o sacramento da Crisma, descobrindo e fortalecendo a fé.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section id="inscricao" class="final-section reveal">
+  <div class="sun-glow"></div>
+  <div class="panel">
+    <h2 class="serif">Vagas limitadas. Não aperte soneca de novo.</h2>
+    <p class="sub">Garanta sua vaga.</p>
+    <div class="cta-stack">
+      <a class="cta cta-form" href="https://forms.gle/XpQYJC3zjzpaXAcA9" target="_blank" rel="noopener">Inscreva-se agora e Desperte para a vida!</a>
+    </div>
+  </div>
+</section>
+
+<footer class="reveal">
+  <div class="panel">
+    <div class="logos-row">
+      <div class="logo-slot">
+        <img src="logo-paroquia.png" alt="Paróquia Nossa Senhora de Fátima"
+             onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','&lt;span class=&quot;logo-fallback&quot;&gt;Paróquia Nossa Senhora de Fátima&lt;/span&gt;');">
+      </div>
+      <div class="logo-slot">
+        <img src="logo-juventude.png" alt="Juventude de Fátima"
+             onerror="this.style.display='none'; this.parentElement.insertAdjacentHTML('beforeend','&lt;span class=&quot;logo-fallback&quot;&gt;Juventude de Fátima&lt;/span&gt;');">
+      </div>
+    </div>
+    <div class="foot-text">Desperta! Retiro Jovem · Paróquia Nossa Senhora de Fátima · #DespertaJovem</div>
+  </div>
+</footer>
+
+<script>
+  // ---------- Rastreamento por link (?origem=instagram | whatsapp | missa) ----------
+  // Use links assim em cada canal:
+  //   https://igorlcabral-commits.github.io/desperta/?origem=instagram
+  //   https://igorlcabral-commits.github.io/desperta/?origem=whatsapp
+  //   https://igorlcabral-commits.github.io/desperta/?origem=missa
+  //   https://igorlcabral-commits.github.io/desperta/?origem=qrcode
+  // O site lê o parâmetro e repassa como utm_source pro link do formulário,
+  // sem abrir nenhum link novo nem sair da página até o clique em "Inscreva-se".
+  (function () {
+    var params = new URLSearchParams(window.location.search);
+    var origem = params.get('origem') || params.get('utm_source') || 'direto';
+    document.querySelectorAll('.cta-form').forEach(function (el) {
+      var base = el.getAttribute('href');
+      if (!base || base.indexOf('[') !== -1) return; // link do formulário ainda não configurado
+      var sep = base.indexOf('?') === -1 ? '?' : '&';
+      el.setAttribute('href', base + sep + 'utm_source=' + encodeURIComponent(origem));
+    });
+  })();
+
+  // ---------- Contador regressivo até 15/08 (estilo calendário) ----------
+  (function () {
+    var tensEl = document.getElementById('cd-tens');
+    var unitsEl = document.getElementById('cd-units');
+    var labelEl = document.querySelector('.countdown-label');
+    var target = new Date('2026-08-15T09:00:00-03:00').getTime();
+    function tick() {
+      var diff = target - Date.now();
+      var days = Math.max(0, Math.ceil(diff / 86400000));
+      if (diff <= 0) { days = 0; labelEl.textContent = 'É hoje! Desperta!'; }
+      var padded = String(days).padStart(2, '0').slice(-2);
+      tensEl.textContent = padded[0];
+      unitsEl.textContent = padded[1];
+    }
+    tick();
+    setInterval(tick, 3600000);
+  })();
+
+  // ---------- Scroll reveal (estilo Apple, repete sempre ao entrar/sair da tela) ----------
+  (function () {
+    var items = document.querySelectorAll('.reveal, .reveal-verse');
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        entry.target.classList.toggle('in-view', entry.isIntersecting);
+      });
+    }, { threshold: 0.15 });
+    items.forEach(function (item) { io.observe(item); });
+  })();
+</script>
+
+</body>
+</html>
